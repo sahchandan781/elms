@@ -53,7 +53,7 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem><Link to='my-learning'>My Learning</Link></DropdownMenuItem>
-                  <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+                  <DropdownMenuItem><Link to="profile">Edit Profile</Link></DropdownMenuItem>
                   <DropdownMenuItem>Log out</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -72,7 +72,7 @@ const Navbar = () => {
 
       {/* mobile */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
-        <h1 className="font-extrabold text-2xl">E-Learning</h1>
+        <h1 className="font-extrabold text-2xl">SkillEdgeX</h1>
         <MobileNavbar />
       </div>
     </div>
@@ -96,12 +96,12 @@ const MobileNavbar = () => {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-8">
-          <SheetTitle>E-Learning</SheetTitle>
+          <SheetTitle>SkillEdgeX</SheetTitle>
           <DarkMode />
         </SheetHeader>
         <nav className="flex flex-col space-y-3 ml-5">
-          <span>My Learning</span>
-          <span>Edit Profile</span>
+          <span><Link to='my-learning'>My Learning</Link></span>
+          <span><Link to="profile">Edit Profile</Link></span>
           <p>Log out</p>
         </nav>
         {role === "instructor" && (
