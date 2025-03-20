@@ -21,6 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { Link } from "react-router-dom";
 
 
 const Navbar = () => {
@@ -34,7 +35,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <School size={"30"} className="" />
           <h1 className="hidden md:block font-extrabold text-2xl">
-            E-learning
+            SkillEdgeX
           </h1>
         </div>
         {/* User Icons and dark mode icon  */}
@@ -51,7 +52,7 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>My Learning</DropdownMenuItem>
+                  <DropdownMenuItem><Link to='my-learning'>My Learning</Link></DropdownMenuItem>
                   <DropdownMenuItem>Edit Profile</DropdownMenuItem>
                   <DropdownMenuItem>Log out</DropdownMenuItem>
                 </DropdownMenuGroup>
