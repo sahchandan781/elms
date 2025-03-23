@@ -36,6 +36,9 @@ const Profile = () => {
 
     }
 
+    useEffect(() => {
+      refetch();
+    },[])
     const updateUserHandler = async() => {
       const formData = new FormData();
       formData.append("name", name);
@@ -51,12 +54,12 @@ const Profile = () => {
       if(isError){
         toast.error(isError.message || "")
       }
-    },[error, isError,updateUserData, isSuccess])
+    },[ isError,updateUserData, isSuccess])
   
 
     if(isLoading) return <h1>Profile is loading...</h1>
 
-    const {user} = data;
+    const user =data && data.user;
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
