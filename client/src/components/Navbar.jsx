@@ -35,7 +35,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <School size={"30"} className="" />
           <h1 className="hidden md:block font-extrabold text-2xl">
-            SkillEdgeX
+            <Link to="/">SkillEdgeX</Link>
           </h1>
         </div>
         {/* User Icons and dark mode icon  */}
@@ -72,7 +72,7 @@ const Navbar = () => {
 
       {/* mobile */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
-        <h1 className="font-extrabold text-2xl">SkillEdgeX</h1>
+        <h1 className="font-extrabold text-2xl"><Link to="/">SkillEdgeX</Link></h1>
         <MobileNavbar />
       </div>
     </div>

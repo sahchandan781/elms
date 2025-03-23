@@ -16,19 +16,47 @@ import React, { useEffect, useState } from "react";
 import Course from "./Course";
 
 import { toast } from "sonner";
-import { useLoadUserQuery } from "@/features/api/authApi";
+import { useLoadUserQuery, useUpdateUserMutation } from "@/features/api/authApi";
 
 const Profile = () => {
-    const {data, isLoading} = useLoadUserQuery();
-    console.log(data);
+  const [name, setName] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState("")
+    const {data, isLoading, refetch} = useLoadUserQuery();
+    const [updateUser, {data:updateUserData, isLoading:updateUserIsLoading, isError, isSuccess}] = useUpdateUserMutation();
+    
     
 
+
+    
+
+    const onChangehandler = (e) => {
+      const file = e.target.files?.[0];
+      if(file) setProfilePhoto(file);
+
+
+    }
+
+    const updateUserHandler = async() => {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("profilePhoto", profilePhoto)
+      await updateUser(formData);
+    }
+
+    useEffect(() => {
+      if(isSuccess) {
+        toast.success(data.message || "Profile Updated,")
+        refetch();
+      }
+      if(isError){
+        toast.error(isError.message || "")
+      }
+    },[error, isError,updateUserData, isSuccess])
+  
 
     if(isLoading) return <h1>Profile is loading...</h1>
 
     const {user} = data;
-
-  
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
@@ -87,7 +115,8 @@ const Profile = () => {
                   <Label>Name</Label>
                   <Input
                     type="text"
-                    
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Name"
                     className="col-span-3"
                   />
@@ -95,7 +124,7 @@ const Profile = () => {
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label>Profile Photo</Label>
                   <Input
-                    
+                    onChange={onChangehandler}
                     type="file"
                     accept="image/*"
                     className="col-span-3"
@@ -103,9 +132,9 @@ const Profile = () => {
                 </div>
               </div>
               <DialogFooter>
-                <Button
+                <Button disabled={updateUserIsLoading} onClick={updateUserHandler}
                 >
-                  {isLoading ? (
+                  {updateUserIsLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
                       wait
