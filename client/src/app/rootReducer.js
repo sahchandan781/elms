@@ -5,7 +5,7 @@ import { courseApi } from "@/features/api/courseApi";
 
 const rootReducer = combineReducers({
     [authApi.reducerPath]:authApi.reducer,
-    [courseApi.reducerPath]:authApi.reducer,
+    [courseApi.reducerPath]:courseApi.reducer,
     auth:authReducer
 })
 
