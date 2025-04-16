@@ -86,8 +86,8 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={navigate("/login")}>Login</Button>
-              <Button onClick={navigate("/login")}>Signup</Button>
+              <Button variant="outline" onClick={()=>navigate("/login")}>Login</Button>
+              <Button onClick={()=>navigate("/login")}>Signup</Button>
             </div>
           )}
           <DarkMode />
@@ -97,7 +97,7 @@ const Navbar = () => {
       {/* mobile */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
         <h1 className="font-extrabold text-2xl"><Link to="/">SkillEdgeX</Link></h1>
-        <MobileNavbar logoutHandler={logoutHandler} user={user}/>
+        <MobileNavbar user={user}/>
       </div>
     </div>
   );
@@ -105,7 +105,18 @@ const Navbar = () => {
 
 export default Navbar;
 
-const MobileNavbar = (logoutHandler, user) => {
+const MobileNavbar = ({user}) => {
+  const navigate = useNavigate();
+  const [logoutUser, {data, isSuccess}] = useLogoutUserMutation();
+  const logoutHandler = async() => {
+    await logoutUser();
+  }
+  useEffect(() => {
+    if(isSuccess){
+      toast.success(data.mesaage || "User logged Out.")
+      navigate("/login")
+    }
+  },[isSuccess])
   const role = "instructor";
   return (
     <Sheet>
@@ -124,14 +135,20 @@ const MobileNavbar = (logoutHandler, user) => {
           <DarkMode />
         </SheetHeader>
         <nav className="flex flex-col space-y-3 ml-5">
-          <span><Link to='my-learning'>My Learning</Link></span>
-          <span><Link to="profile">Edit Profile</Link></span>
-          <p onClick={logoutHandler} className="cursor-pointer">Log out</p>
+          
+          {
+            user ? (
+             <> <span><Link to='my-learning'>My Learning</Link></span>
+              <span><Link to="profile">Edit Profile</Link></span>
+            <span><button onClick={logoutHandler} className="cursor-pointer">Log out</button></span> </>): (
+              <span><button onClick={logoutHandler} className="cursor-pointer">Login</button></span>
+            )
+          }
         </nav>
-        {role === "instructor" && (
-          <SheetFooter>
+        {user?.role === "instructor" && (
+          <SheetFooter className="mt-0">
             <SheetClose asChild>
-              <Button type="submit">Dashboard</Button>
+            <Button type="submit" onClick={()=> navigate("/admin")}>Dashboard</Button>
             </SheetClose>
           </SheetFooter>
         )}

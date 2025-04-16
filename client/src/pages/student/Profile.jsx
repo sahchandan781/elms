@@ -52,14 +52,14 @@ const Profile = () => {
         refetch();
       }
       if(isError){
-        toast.error(isError.message || "")
+        toast.error(isError.message ||  "Failed to update profile")
       }
     },[ isError,updateUserData, isSuccess])
   
 
     if(isLoading) return <h1>Profile is loading...</h1>
 
-    const user =data && data.user;
+    const user =data.user;
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
