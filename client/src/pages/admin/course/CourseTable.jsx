@@ -50,7 +50,7 @@ const CourseTable = () => {
       </TableHeader>
       <TableBody>
         {data?.courses.map((course) => (
-          <TableRow key={course.id}>
+          <TableRow key={course._id}>
             <TableCell className="font-medium">{course.coursePrice || "NA"}</TableCell>
             <TableCell><Badge>{course.isPublished? "Published" : "Draft"}</Badge></TableCell>
             <TableCell>{course.courseTitle}</TableCell>

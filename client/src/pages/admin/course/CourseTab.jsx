@@ -19,9 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useEditCourseMutation } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const CourseTab = () => {
   const navigate = useNavigate();
@@ -36,7 +38,10 @@ const CourseTab = () => {
   });
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const isPublished = false;
-  const isLOading = false;
+  const params = useParams();
+  const courseId = params.courseId;
+  
+  const [editCourse, {data, isLoading, isSuccess, error}] = useEditCourseMutation();
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -62,10 +67,28 @@ const CourseTab = () => {
     }
   };
 
-  const updateCourseHandler = () => {
-    console.log(input);
+  const updateCourseHandler = async() => {
+    const formData = new FormData();
+    formData.append("courseTitle", input.courseTitle);
+    formData.append("subTitle", input.subTitle);
+    formData.append("description", input.description);
+    formData.append("category", input.category);
+    formData.append("courseLevel", input.courseLevel);
+    formData.append("coursePrice", input.coursePrice);
+    formData.append("courseThumbnail", input.courseThumbnail);
+
+    await editCourse({formData, courseId});
     
   }
+
+  useEffect(() => {
+    if(isSuccess) {
+      toast.success(data.message || "Course updated!")
+    }
+    if(error) {
+      toast.error(error.data.message || "Failed to update course!")
+    }
+  }, [isSuccess, error])
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between ">
@@ -193,8 +216,8 @@ const CourseTab = () => {
             <Button variant="outline" onClick={() => navigate("/admin/course")}>
               Cancel
             </Button>
-            <Button disabled={isLOading} onClick={updateCourseHandler}>
-              {isLOading ? (
+            <Button disabled={isLoading} onClick={updateCourseHandler}>
+              {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
