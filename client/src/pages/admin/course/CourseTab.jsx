@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useEditCourseMutation } from "@/features/api/courseApi";
+import { useEditCourseMutation, useGetCourseByIdQuery } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -36,10 +36,30 @@ const CourseTab = () => {
     coursePrice: "",
     courseThumbnail: "",
   });
-  const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const isPublished = false;
   const params = useParams();
   const courseId = params.courseId;
+  const {data:courseByIdData, isLoading:CourseByIdLoading, refetch} = useGetCourseByIdQuery(courseId);
+
+  const course = courseByIdData?.course;
+
+  useEffect(() => {
+    if(courseByIdData?.course){
+      const course = courseByIdData?.course;
+      setInput({
+        courseTitle: course.courseTitle,
+        subTitle: course.subTitle,
+        description: course.description,
+        category: course.category,
+        courseLevel: course.courseLevel,
+        coursePrice: course.coursePrice,
+        courseThumbnail: "",
+      })
+    }
+  }, [courseByIdData])
+
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+  const isPublished = false;
+  
   
   const [editCourse, {data, isLoading, isSuccess, error}] = useEditCourseMutation();
 
@@ -84,11 +104,14 @@ const CourseTab = () => {
   useEffect(() => {
     if(isSuccess) {
       toast.success(data.message || "Course updated!")
+      navigate("/admin/course")
     }
     if(error) {
       toast.error(error.data.message || "Failed to update course!")
     }
-  }, [isSuccess, error])
+  }, [isSuccess, error]);
+
+  if(CourseByIdLoading) return <h1>Loading...</h1>
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between ">
