@@ -16,7 +16,7 @@ const CreateLecture = () => {
 
   const [createLecture, {data, isLoading,isSuccess, error}] = useCreateLecureMutation();
   const {data:lectureData, isLoading:lectureLoading, isError:lectureError, refetch} = useGetCourseLecureQuery(courseId);
-  console.log(lectureData);
+ 
 
   const createLectureHandler = async() => {
 

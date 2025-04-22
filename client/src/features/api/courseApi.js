@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const COURSE_API = "http://localhost:8081/api/v1/course";
 export const courseApi = createApi({
   reducerPath: "courseApi",
-  tagTypes: ["Refetch_Creator_Course"],
+  tagTypes: ["Refetch_Creator_Course", "Refetch_Lecture"],
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
     credentials: "include",
@@ -50,7 +50,24 @@ export const courseApi = createApi({
         url: `/${courseId}/lecture`,
         method:"GET",
       }),
-    })
+      providesTags: ["Refetch_Lecture"]
+    }),
+    editLecture: builder.mutation({
+      query: ({lectureTitle, videoInfo, isPreviewFree, courseId, lectureId}) => ({
+        url:`/${courseId}/lecture/${lectureId}`,
+        method: "POST",
+        body:{lectureTitle, videoInfo, isPreviewFree}
+      })
+    }),
+    removeLecture: builder.mutation({
+      query: ( lectureId) => ({
+        url:`/lecture/${lectureId}`,
+        method: "DELETE",
+        body:{lectureId}
+      }),
+      invalidatesTags:["Refetch_Lecture"]
+    }),
+
   }),
 });
 
@@ -61,4 +78,6 @@ export const {
   useGetCourseByIdQuery,
   useCreateLecureMutation,
   useGetCourseLecureQuery,
+  useEditLectureMutation,
+  useRemoveLectureMutation
 } = courseApi;

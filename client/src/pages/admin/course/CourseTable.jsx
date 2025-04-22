@@ -38,7 +38,7 @@ const CourseTable = () => {
   return (
     <div className='m-15'>
         <Button onClick={()=> navigate('/admin/course/create')}>Create a new Course</Button>
-        <Table className='mt-5'>
+        <Table className='mt-5  text-gray-800 dark:text-gray-100 bg-[#f7f9fa] dark:bg-[#1f1f1f]'>
       <TableCaption>A list of your recent courses.</TableCaption>
       <TableHeader>
         <TableRow>
