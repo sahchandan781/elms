@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import {
   useEditLectureMutation,
+  useGetLectureByIdQuery,
   useRemoveLectureMutation,
 } from "@/features/api/courseApi";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,6 +33,17 @@ const LectureTab = () => {
   const { courseId, lectureId } = params;
   const navigate = useNavigate();
 
+  const {data:lectureData, } = useGetLectureByIdQuery(lectureId);
+  const lecture = lectureData?.lecture;
+
+  useEffect(()=>{
+    if(lecture){
+        setLectureTitle(lecture.lectureTitle);
+        setIsFree(lecture.isPreviewFree);
+        setUploadVideoInfo(lecture.videoInfo);
+    }
+  },[lecture])
+
   const [editLecture, { data, isLoading, error, isSuccess }] =
     useEditLectureMutation();
   const [
@@ -48,7 +60,7 @@ const LectureTab = () => {
       try {
         const res = await axios.post(`${MEDIA_API}/upload-video`, formData, {
           onUploadProgress: ({ loaded, total }) => {
-            setMediaProgress(Math.round((loaded * 100) / total));
+            setUploadProgress(Math.round((loaded * 100) / total));
           },
         });
 
@@ -86,7 +98,7 @@ const LectureTab = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message);
-      navigate("/admin/course/courseId/lecture")
+      navigate(`/admin/course/${courseId}/lecture`)
     }
     if (error) {
       toast.error(error.data.message);
@@ -152,7 +164,7 @@ const LectureTab = () => {
           />
         </div>
         <div className="flex items-center space-x-2 my-5">
-          <Switch id="airplane-mode" className="cursor-pointer" />
+          <Switch id="airplane-mode" checked={isFree} onCheckedChange={setIsFree} className="cursor-pointer" />
           <Label htmlFor="airplane-mode">Is this video free?</Label>
         </div>
         {mediaProgress && (
@@ -163,7 +175,7 @@ const LectureTab = () => {
         )}
 
         <div className="mt-4">
-          <Button disable={isLoading} className="cursor-pointer" onClick={editLectureHandler}>
+          <Button disabled={isLoading} className="cursor-pointer" onClick={editLectureHandler}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

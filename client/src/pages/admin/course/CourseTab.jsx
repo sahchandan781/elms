@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useEditCourseMutation, useGetCourseByIdQuery } from "@/features/api/courseApi";
+import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -39,6 +39,7 @@ const CourseTab = () => {
   const params = useParams();
   const courseId = params.courseId;
   const {data:courseByIdData, isLoading:CourseByIdLoading, refetch} = useGetCourseByIdQuery(courseId);
+  const [publishCourse, {}] = usePublishCourseMutation()
 
   const course = courseByIdData?.course;
 
@@ -57,8 +58,21 @@ const CourseTab = () => {
     }
   }, [courseByIdData])
 
+  const publishStatusHandler = async(action) => {
+    try {
+      const res = await publishCourse({courseId, query: action});
+      if(res.data) {
+        toast.success(res.data.message);
+        refetch();
+      }
+    } catch (error) {
+      toast.error("failed to publish or unpublish course");
+    }
+
+  }
+
   const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const isPublished = false;
+  
   
   
   const [editCourse, {data, isLoading, isSuccess, error}] = useEditCourseMutation();
@@ -123,8 +137,8 @@ const CourseTab = () => {
           </CardTitle>
         </div>
         <div className="space-x-2">
-          <Button variant="outline">
-            {isPublished ? "Unpublish" : "Publish"}
+          <Button variant="outline" disabled={courseByIdData?.course.lectures.length === 0} onClick={()=> publishStatusHandler(courseByIdData?.course.isPublish ? "false":"true")}>
+            {courseByIdData?.course.isPublish? "Unpublish" : "Publish"}
           </Button>
           <Button>Remove </Button>
         </div>
