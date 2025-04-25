@@ -22,6 +22,9 @@ const courseSchema = new mongoose.Schema({
     coursePrice:{
         type:Number,
     },
+    courseThumbnail:{
+        type:String
+    },
     enrolledStudent:[
         {
             type: mongoose.Schema.Types.ObjectId,
