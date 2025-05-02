@@ -148,7 +148,7 @@ const MobileNavbar = ({user}) => {
         {user?.role === "instructor" && (
           <SheetFooter className="mt-0">
             <SheetClose asChild>
-            <Button type="submit" onClick={()=> navigate("/admin")}>Dashboard</Button>
+            <Button type="submit" onClick={()=> navigate("/admin/dashboard")}>Dashboard</Button>
             </SheetClose>
           </SheetFooter>
         )}
