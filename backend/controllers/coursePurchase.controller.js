@@ -130,7 +130,7 @@ export const stripeWebhook = async (req, res) => {
         // Update course to add user ID to enrolledStudents
         await Course.findByIdAndUpdate(
           purchase.courseId._id,
-          { $addToSet: { enrolledStudents: purchase.userId } }, // Add user ID to enrolledStudents
+          { $addToSet: { enrolledStudent: purchase.userId } }, // Add user ID to enrolledStudents
           { new: true }
         );
       } catch (error) {
@@ -152,12 +152,13 @@ export const stripeWebhook = async (req, res) => {
         .populate({ path: "lectures" });
   
       const purchased = await CoursePurchase.findOne({ userId, courseId });
+      console.log(purchased);
       
   
       if (!course) {
         return res.status(404).json({ message: "course not found!" });
       }
-  
+      
       return res.status(200).json({
         course,
         purchased: !!purchased, // true if purchased, false otherwise
